@@ -1,0 +1,164 @@
+<html>
+
+<head>
+</head>
+
+<body onload="initiateWMenu()">
+    <div id="wmenuboxpanel" class="wmenuboxpanel">
+        <div id="wmenubox" class="wmenubox">
+
+            <input id="wmenuipbox" type="text" value="select..."
+                style="width: 90%;border: 1px solid transparent;outline: 0;" />
+            <input id="wmenuipdelbtn" class="wmenuipdelbtn" type="button" value="x" onclick="clearIpBox();" />
+            <input id="wmenuiplsbtn" class="wmenuiplsbtn" type="button" value="..." onclick="viewListOptions();" />
+
+        </div>
+    </div>
+
+</body>
+
+<style>
+
+
+
+</style>
+
+<script type="text/javascript">
+
+
+    var dataList = [];
+
+    function initiateWMenu() {
+        dataList = ["green", "dam", "yellow", "box", "jet", "van", "red", "syrup"];
+    }
+
+
+    function viewListOptions() {
+
+        var resDataBox = renderResDataBox(1, 1);
+
+
+        var wmenubox = document.getElementById("wmenubox");
+        resDataBox.style.width = wmenubox.style.width + "px";
+
+
+        for (var i = 0; i < dataList.length; i++) {
+
+            var itemDiv = document.createElement("div");
+            itemDiv.id = "wmenuitem" + (i + 1);
+            itemDiv.textContent = dataList[i];
+            itemDiv.className = "resDataItem";
+            resDataBox.appendChild(itemDiv);
+
+            itemDiv.addEventListener("click", (e) => {
+                selectWMenuItem(e, i);
+                //console.debug("dybox click e","")
+            });
+
+        }
+
+    }
+
+
+    function selectWMenuItem(e, ix) {
+        var item = e.target;
+        var wmenuipbox = document.getElementById("wmenuipbox");
+        wmenuipbox.value = item.innerText;
+
+        renderResDataBox(0, 1);
+
+    }
+
+    function renderResDataBox(renderVal, resetVal) {
+        var wmenuboxpanel = document.getElementById("wmenuboxpanel");
+        var resDataBox = document.getElementById("resDataBox");
+        if (resetVal === 1) {
+
+            if (resDataBox != undefined) {
+                wmenuboxpanel.removeChild(resDataBox);
+            }
+
+            resDataBox = document.createElement("div");
+            resDataBox.id = "resDataBox";
+            resDataBox.className = "resDataBox";
+            resDataBox.style.border = "1px solid black"
+            resDataBox.style.padding = "2px";
+        } else {
+
+        }
+
+        resDataBox.style.visibility = renderVal === 1 ? "visible" : "hidden";
+        wmenuboxpanel.appendChild(resDataBox); // in div
+        return resDataBox;
+    }
+
+
+    function clearIpBox() {
+        var wmenuboxpanel = document.getElementById("wmenuboxpanel");
+
+        var wmenubox = document.getElementById("wmenubox");
+        var wmenuipbox = document.getElementById("wmenuipbox");
+        wmenuipbox.value = "";
+        var resDataBox = document.getElementById("resDataBox");
+        resDataBox.style.visibility = "hidden";
+
+    }
+
+
+</script>
+
+<style>
+    .wmenuboxpanel {
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .wmenubox {
+        width: 10rem;
+        border: 2px solid black;
+        display: flex;
+    }
+
+    .wmenuipbox input[type="text"],
+    .wmenuipbox.input[type="text"] {
+        width: 90%;
+        border: 1px solid transparent;
+        outline: 0;
+    }
+
+    .wmenuipbox:focus {
+        border: none !important;
+    }
+
+    .wmenuipdelbtn {
+        background: transparent;
+        border: none;
+        font-weight: 800;
+    }
+
+    .wmenuiplsbtn {
+        background: transparent;
+        border: none;
+        font-weight: 800;
+    }
+
+    .wmenuiplsbtn:hover {
+        cursor: pointer;
+    }
+
+    .resDataBox {
+        visibility: hidden;
+        height: 15rem;
+        border: 1px solid black;
+        overflow-x: hidden;
+        overflow-y: scroll;
+    }
+
+    .resDataItem {}
+
+    .resDataItem:hover {
+        background: rgb(97, 236, 155);
+        color: black;
+    }
+</style>
+
+</html>

@@ -1,0 +1,74 @@
+        div.canvasContainer {
+            /* width: 5000px; */
+            border: 2px dotted red;
+        }
+
+        div.canvasRow {
+            /* width: 5000px; */
+            display: flex;
+            flex-grow: inherit;
+            flex-shrink: initial;
+        }
+
+        div.dybox {
+            position: relative;
+            width: 100px;
+            height: 30px;
+            border: 1px solid green;
+        }
+
+        div.dybox:hover {
+            cursor: pointer;
+        }
+
+        div.opgrp {
+            position: absolute;
+            margin: 0px;
+            top: 0px;
+            left: 0;
+            width: 100px;
+            height: 30px;
+            margin: 0px;
+            border: 1px solid rgb(92, 166, 235);
+            overflow: hidden;
+        }
+
+        div.ipgrp {
+            position: absolute;
+            margin: 0px;
+            top: 0px;
+            left: 0;
+            width: 100px;
+            height: 30px;
+            margin: 0px;
+            border: 1px solid rgb(160, 145, 10);
+            overflow: hidden;
+        }
+
+        input[type="text"] {
+            margin: 0px;
+            width: 90px;
+            height: 30px;
+        }
+
+        p {
+            margin: 0px;
+            width: 100px;
+            height: 30px;
+            z-index: 1;
+        }
+
+        div.canvasControls {
+            position: sticky;
+            border: 2px dotted cornflowerblue;
+            border-radius: 50px;
+        }
+
+        div.floatingInfoBox{
+            
+        }
+
+        div.floatingInfoBox.p{
+            font-size: 14px;
+            letter-spacing: 2px;
+        }
