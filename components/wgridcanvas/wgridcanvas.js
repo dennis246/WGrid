@@ -56,8 +56,59 @@ window.addEventListener("keydown", (e) => {
 
 function initiateCanvas() {
 
+    //var navlistObj = document.getElementsByClassName("privateObject");
+    // var navlistObj = document.getElementById("navlistObj");
+    // var baseURI = navlistObj.attributes[1].baseURI;
+    //console.log("baseURI:", baseURI);
+
+    // var jsonpath = navlistObj.attributes[1].value;
+    // var jsonqpath = baseURI.substring(0, baseURI.indexOf("/components")) + jsonpath.substring(jsonpath.indexOf("/datamodel"));
+    // //console.log("jsonurl:", navlistObj.attributes[1].value);
+    // console.log("jsonqpath", jsonqpath);
+
+    // if (webkitURL.canParse(jsonqpath)) {
+
+    // }
+
+    // console.log(jsonqpath.replace("file:///",""));
+    //var pd = fetch(jsonqpath.replace("file:///"));
+
+
+    //console.log("can parse ::", webkitURL.parse(jsonqpath));
+    //Uint16Array.
+
+
+    //console.log(document.scripts[0].dataset);
+    //console.log(navlistObj.children.item);
+
+    // var rs = new ReadableStream();
+    // rs.getReader().read();
+
+    // URL.canParse();
+
+    // // var navlistPara = document.getElementsByClassName("navlistPara");
+    // // console.log(navlistPara);
+    // var pobj = navlistObj.namedItem("navlistObj");
+    // console.log("pobj", navlistObj.namedItem("navlistObj").getHTML.toString);
+
+    // var pobj2 = document.querySelectorAll("object");
+    // console.log("indoc::doc", pobj2);
+    // var pobj3 = new Object(pobj2); 
+    // var pobj4 = Array.from(pobj3);
+    // var indoc = pobj.innerHTML;
+    //console.log("pobj4", pobj4[0].querySelectorAll("object"));
+
+    // var imgB2198 = document.getElementById("imgB2198");
+    // console.log(navlistObj.namedItem("navlistObj").getHTML.toString);
+
+    //console.log(window.sessionStorage.);
+    // var blob = new Blob();
+    // var fr = new FileReader(blob);
+    // fr.readAsText();
+
+    //eotst
+    //
     canvasContainer = document.getElementById("canvasContainer");
-    
     importComponents();
 
     //var windowMaxHeight = window.visualViewport.height;
@@ -65,7 +116,6 @@ function initiateCanvas() {
     var windowMaxHeight = 1000;
     var windowMaxWidth = 3240;
 
-    
     canvasContainer.className = "canvasContainer";
     canvasContainer.style.width = windowMaxWidth + "px";
     canvasContainer.style.border = "2px dotted red";
@@ -602,11 +652,41 @@ function selectNextBoxByKeyType(e) {
 }
 
 
+// function importData(){
+
+// }
+
 function importComponents() {
-    canvasContainer.appendChild(emitWMenuBoxPanel());
+
+    let navBtnInfoMap = new Map();
+    navBtnInfoMap.set('id', 'lnavlistpanelAccessBtn');
+    navBtnInfoMap.set('className', 'lnavlistpanelAccessBtn');
+    navBtnInfoMap.set('buttonLabel', 'LNav');
+
+    var wbutton = emitWButton(navBtnInfoMap);
+    wbutton.addEventListener("click", (e) => {
+        //viewWdsListOptions();
+        //loadWdsDataList();
+        togglelnavlistpanelbox(e);
+    })
+
+    canvasContainer.appendChild(wbutton);
+
+    let lnavlistInfoMap = new Map();
+    lnavlistInfoMap.set('renderLNavListPanelInd', 0);
+    lnavlistInfoMap.set('wdsresdatalist', dataList);
+    lnavlistInfoMap.set('resboxAlwaysVisibleInd', true);
+    canvasContainer.appendChild(emitLNavListBoxPanel(lnavlistInfoMap));
+
+    var wdsInfoMap = new Map();
+    wdsInfoMap.set("id", "wdsbox92");
+    wdsInfoMap.set("renderresboxInd", 0);
+    //canvasContainer.appendChild(emitWdsBoxPanel(wdsInfoMap));
 }
 
 
+
+// OLD
 // function dyboxIpDefaultStyle() {
 //     dyboxIp.id = "ixp" + ri;
 //     dyboxIp.value = ri;
@@ -625,7 +705,7 @@ function importComponents() {
 
 
 // util
-function startsWith(content, sequence) {
+function startsWith0(content, sequence) {
 
     var mainArr = Array.from(content);
     var seqArr = Array.from(sequence);
@@ -661,7 +741,7 @@ function startsWith(content, sequence) {
 
 
 
-function checkPartialMatch(firstArr, secondArr, ignoreCase) {
+function checkPartialMatch0(firstArr, secondArr, ignoreCase) {
     if (ignoreCase != 1 && ignoreCase != 0) {
         ignoreCase = 0;
     }

@@ -1,0 +1,25 @@
+<html>
+
+<head>
+    <link href="wmenubox.css" rel="stylesheet" type="text/css" />
+</head>
+
+
+<body onload="initiateWMenu()">
+    <div id="wmenuboxpanel" class="wmenuboxpanel">
+        <div id="wmenubox" class="wmenubox">
+
+            <input id="wmenuipbox" type="text" value="select..."
+                style="width: 90%;border: 1px solid transparent;outline: 0;" />
+            <input id="wmenuipdelbtn" class="wmenuipdelbtn" type="button" value="x" onclick="clearIpBox();" />
+            <input id="wmenuiplsbtn" class="wmenuiplsbtn" type="button" value="..." onclick="viewWdsListOptions();" />
+
+        </div>
+        <div id="resDataBox" class="resDataBox" ></div>
+    </div>
+
+</body>
+
+<script type="text/javascript" src="wmenubox.js"></script>
+
+</html>

@@ -1,0 +1,445 @@
+<html>
+
+<head>
+    <style>
+        p {
+            margin: 0px;
+        }
+
+        .box {
+            position: relative;
+            border: 1px solid red;
+            width: 100px;
+            height: 30px;
+        }
+
+        .boxop {
+            position: absolute;
+            border: 1px solid rgb(72, 92, 184);
+            width: 100px;
+            height: 30px;
+        }
+
+        .boxip,
+        input[type="text"] {
+            position: absolute;
+            border: 1px solid rgb(0, 255, 55);
+            width: 100px;
+            height: 30px;
+        }
+    </style>
+</head>
+
+<body onload="initiateCanvas()">
+
+    <!-- <div id="canvasEncloserDiv" style="position: ;" > -->
+    <div id="canvasDiv" class="canvasDiv">
+    </div>
+    <div id="controlsDiv" class="controlsDiv">
+    </div>
+    <!-- </div> -->
+
+</body>
+<link href="style.css" type="text/css" />
+<script type="text/javascript">
+
+    var maxBoxes_H = 50;
+    var maxBoxes_V = 50;
+    var defaultBoxWidth = 100;
+    var defaultBoxHeight = 30;
+    var curBuffLastBoxVal = maxBoxes_H * maxBoxes_V;
+    //window.KeyframeEffect
+    var canvasDiv;
+    var focusedElement;
+    var curKeyType;
+
+    var feIx = 0;
+    var nxteIx = 0;
+    var nxtBox;
+    var nxtBoxId;
+
+    var dyboxModes = ['ip_visible', 'op_visible'];
+    var dyboxMode = 'op_visible';
+
+    var hgligBoxModes = ['hidden', 'default', 'appending'];
+    var hgligBoxMode = 'hidden';
+    var hgligBox;
+    var curHgligBoxWidth = defaultBoxWidth;
+    var curHgligBoxHeight = defaultBoxHeight;
+    var hgligBoxDyBoxes = [];
+
+
+    window.addEventListener("keydown", (e) => {
+        selectNextBoxByKeyType(e);
+    })
+
+    window.addEventListener("tab", (e) => {
+        selectNextBoxByKeyType(e);
+    })
+
+
+    function initiateCanvas() {
+        var windowMaxHeight = window.visualViewport.height;
+        var windowMaxWidth = window.visualViewport.width;
+        canvasDiv = document.getElementById("canvasDiv");
+        canvasDiv.style.border = "1px solid black;"
+        canvasDiv.style.width = windowMaxWidth + "px";
+        canvasDiv.style.border = windowMaxHeight + "px";
+        canvasDiv.style.position = "absolute";
+        canvasDiv.style.top = "40px";
+        canvasDiv.style.left = "20px";
+        canvasDiv.style.padding = "0px;";
+        // var defaultBoxWidth = windowMaxWidth / maxBoxes_H;
+        // var defaultBoxHeight = windowMaxHeight / maxBoxes_V;
+
+        var curTopPos = 0;
+        var curLeftPos = 0;
+        //dybox.style.top = curTopPos + "px";
+        //dybox.style.left = curLeftPos + "px";
+        //document.body.appendChild(dybox);
+
+
+        // var dyboxF = document.createElement("div");
+        // dyboxF.style.width = defaultBoxWidth + "px";
+        // dyboxF.style.height = defaultBoxHeight + "px";
+        // dyboxF.style.top = 100 + "px";
+        // dyboxF.style.left = 10 + "px";
+        // dyboxF.style.position = "absolute";
+
+        var ri = 1;
+        for (var i = 1; i < maxBoxes_V; i++, ri++) {
+
+            for (var j = 1; j < maxBoxes_H; j++, ri++) {
+
+                //++ri;
+                if (j >= maxBoxes_H) {
+                    break;
+                }
+
+
+                //box
+                var dybox = document.createElement("div");
+                dybox.id = "dybx" + ri;
+                //dybox.style.backgroundColor = "#ededed";
+                //dybox.style.textAlign = "center";
+                //dybox.style.verticalAlign = "middle";
+                dybox.style.borderBlockEndColor = "black";
+                dybox.style.border = "2px solid #c7c7c7";
+                dybox.style.borderWidth = "2px;"
+                dybox.style.borderColor = "green;"
+                dybox.style.width = defaultBoxWidth + "px";
+                dybox.style.height = defaultBoxHeight + "px";
+                dybox.style.top = curTopPos + "px";
+                dybox.style.left = curLeftPos + "px";
+                //dybox.style.position = "sticky";
+                dybox.style.position = "absolute";
+                //dybox.style.display = "inline block";
+                dybox.style.padding = "0px !important";
+                dybox.addEventListener("focus", (e) => {
+                    toggleDyBox(e, ri);
+                });
+
+                dybox.addEventListener("click", (e) => {
+                    toggleDyBox(e, ri);
+                });
+
+                //op
+                var dyboxOpDiv = document.createElement("div");
+                dyboxOpDiv.id = "oxpgrp" + ri;
+                dyboxOpDiv.style.width = defaultBoxWidth + "px";
+                dyboxOpDiv.style.height = defaultBoxHeight + "px";
+                dyboxOpDiv.style.top = curTopPos + "px";
+                dyboxOpDiv.style.left = curLeftPos + "px";
+                //dyboxIpDiv.style.zIndex = '-1';
+                
+                //dyboxOp.style.display = "inline block";
+                //dyboxOpDiv.style.position = "absolute";
+
+                var dyboxOpLabel = document.createElement("p");
+                dyboxOpLabel.id = "oxp" + ri;
+                dyboxOpLabel.style.userSelect = 'none';
+                dyboxOpLabel.style.width = defaultBoxWidth + "px";
+                dyboxOpLabel.style.height = defaultBoxHeight + "px";
+                dyboxOpLabel.style.top = curTopPos + "px";
+                dyboxOpLabel.style.left = curLeftPos + "px";
+                dyboxOpLabel.style.fontWeight = '700';
+                dyboxOpLabel.style.color = 'green';
+                dyboxOpLabel.value = ri + "INP";
+                dyboxOpLabel.textContent = ri + "INP";
+
+                dyboxOpDiv.appendChild(dyboxOpLabel);
+                dybox.appendChild(dyboxOpDiv);
+
+                //ip grp
+                var dyboxIpDiv = document.createElement("div");
+                dyboxIpDiv.id = "ixpgrp" + ri;
+                dyboxIpDiv.style.width = defaultBoxWidth + "px";
+                dyboxIpDiv.style.height = defaultBoxHeight + "px";
+                dyboxIpDiv.style.top = curTopPos + "px";
+                dyboxIpDiv.style.left = curLeftPos + "px"; 
+                dyboxIpDiv.style.zIndex = '-1';
+                //dyboxIpDiv.style.float = "left";
+                //dyboxOp.style.display = "inline block";
+                //dyboxIpDiv.style.position = "absolute";
+
+                //inp
+                var dyboxIpTxt = document.createElement("input");
+                dyboxIpTxt.id = "ixp" + ri;
+                dyboxIpTxt.value = ri;
+                dyboxIpTxt.style.border = "2px solid orange"; 
+                //dyboxIp.style.float = 'left';
+                dyboxIpTxt.style.width = (defaultBoxWidth - 0) + "px";
+                dyboxIpTxt.style.height = (defaultBoxHeight - 0) + "px";
+                dyboxIpTxt.style.top = curTopPos + "px";
+                dyboxIpTxt.style.left = curLeftPos + "px";
+                dyboxIpTxt.style.zIndex = '-1';
+                //dyboxIpDiv.style.float = "left";
+                //dyboxIp.innerHTML = i * j; //tab
+                dyboxIpTxt.innerHTML = ri;
+                //dyboxIpTxt.style.visibility = "hidden";
+
+                dyboxIpTxt.addEventListener("focus", (e) => {
+                    boxSelectionEvent(e, ri);
+                });
+
+                dyboxIpTxt.addEventListener("click", (e) => {
+                    boxSelectionClickEvent(e, ri);
+                });
+
+                dyboxIpDiv.appendChild(dyboxIpTxt);
+                dybox.appendChild(dyboxIpDiv);
+
+                //dyboxF.appendChild(dybox);
+                canvasDiv.appendChild(dybox);
+                curLeftPos += defaultBoxWidth;
+            }
+
+            curLeftPos = 0;
+            curTopPos += defaultBoxHeight;
+
+
+        }
+
+    }
+
+    function toggleDyBox(e) {
+        focusedElement = e.target;
+        var cboxid = e.target.id;
+
+        if (cboxid.startsWith('oxp') ||
+            cboxid.startsWith('ixp')
+        ) {
+            focusedElement = focusedElement.parentNode;
+        }
+
+        console.log("input focus/click event", "id:", cboxid);
+        var feBoxOp = focusedElement.childNodes[0];
+        var feBoxIp = focusedElement.childNodes[1];
+
+        if (feBoxIp.style.visibility === 'hidden') {
+            feBoxIp.style.visibility = 'visible';
+            feBoxOp.style.visibility = 'hidden';
+        } else if (feBoxOp.style.visibility === 'hidden') {
+            feBoxOp.style.visibility = 'visible';
+            feBoxIp.style.visibility = 'hidden';
+        }
+
+    }
+
+
+    function boxSelectionClickEvent(e) {
+        focusedElement = e.target;
+        var cboxid = e.target.id;
+
+        if (cboxid.startsWith('oxp') ||
+            cboxid.startsWith('ixp')
+        ) {
+            focusedElement = focusedElement.parentNode;
+        }
+
+        console.log("input click event", "id:", cboxid);
+
+        for (var i = 0; i < hgligBoxDyBoxes.length; i++) {
+            hgligBoxDyBoxes.pop();
+        }
+    }
+
+    function boxSelectionEvent(e) {
+
+        focusedElement = e.target;
+        var cboxid = e.target.id;
+
+        if (cboxid.startsWith('oxp') ||
+            cboxid.startsWith('ixp')
+        ) {
+            focusedElement = focusedElement.parentNode;
+        }
+
+        console.log("input focus event", "id:", cboxid);
+
+        if (hgligBoxMode === 'hidden') {
+            hgligBox = document.createElement("div");
+            hgligBox.style.borderColor = "blue;"
+            hgligBox.style.borderWidth = "2px";
+            //hgligBox.style.background = "red";
+            hgligBox.style.color = "black";
+            hgligBox.style.width = defaultBoxWidth + "px";
+            hgligBox.style.height = defaultBoxHeight + "px";
+            hgligBox.style.top = focusedElement.style.top;
+            hgligBox.style.left = focusedElement.style.left;
+            hgligBox.style.position = "absolute";
+            hgligBox.style.padding = "0px;";
+            hgligBoxMode = 'default';
+
+            hgligBoxDyBoxes.push(focusedElement);
+
+            canvasDiv.appendChild(hgligBox);
+        } else if (hgligBoxMode === 'appending') {
+
+        }
+        //document.appendChild(hgligBox);
+    }
+
+    function applyHgLigDefaultStyle(boxehglig) {
+
+        boxehglig.style.border = "2px dotted blue !important;"
+        boxehglig.style.background = "transparent !important";
+        //boxehglig.style.color = "black";
+        boxehglig.style.width = defaultBoxWidth + "px";
+        boxehglig.style.height = defaultBoxHeight + "px";
+        boxehglig.style.top = focusedElement.style.top;
+        boxehglig.style.left = focusedElement.style.left;
+        boxehglig.style.position = "absolute";
+        boxehglig.style.padding = "0px;";
+        hgligBoxMode = 'default';
+        return boxehglig;
+    }
+
+    function resetHgLigStyleOfBox() {
+        focusedElement.style.border = "1px solid black;"
+        focusedElement.style.background = "yellow !important";
+    }
+
+
+
+
+    function canvasInnerFocusEvent() {
+
+    }
+
+    function selectNextBoxByKeyType(e) {
+
+
+        curKeyType = e.key;
+        if (focusedElement != null) {
+            console.log("movingfocusfrom:", focusedElement.id, "etype", curKeyType);
+        }
+
+        if (!curKeyType.startsWith('Arrow') && curKeyType.startsWith('Escape')) {
+            return;
+        }
+
+        console.log("hgligBoxDyBoxes", hgligBoxDyBoxes.length);
+
+        feIx = parseInt(focusedElement.id.substring(3));
+        //var nxteIx = 0;
+        //var nxtBox;
+        //var nxtBoxId;
+        if (feIx < curBuffLastBoxVal) {
+            if (curKeyType === 'ArrowDown') {
+
+                nxteIx = feIx + maxBoxes_H;
+                nxtBoxId = 'ixp' + nxteIx;
+                nxtBox = document.getElementById(nxtBoxId);
+                nxtBox = applyHgLigDefaultStyle(nxtBox);
+                hgligBoxDyBoxes.push(nxtBox);
+                focusedElement = nxtBox;
+
+                // var prevVerOfNxtBox = canvasDiv.getElementsById(nxtBoxId)[0];
+                // nxtBox.insertAfter(prevVerOfNxtBox);
+                // canvasDiv.removeChild(prevVerOfNxtBox);
+
+            } else if (curKeyType === 'ArrowUp') {
+
+                nxteIx = feIx - maxBoxes_H;
+
+                if (hgligBoxDyBoxes.length > 1) {
+                    hgligBoxDyBoxes.pop(feIx);
+                    //canvasDiv.remove(hgligBoxDyBoxes[feIx]);
+                    //focusedElement.style 
+                    resetHgLigStyleOfBox();
+                    hgligBoxDyBoxes.pop(feIx);
+                }
+
+            } else if (curKeyType === 'ArrowRight') {
+
+                if (feIx % maxBoxes_H == 0) {
+                    nxteIx = feIx;
+                } else {
+                    nxteIx = feIx + 1;
+                    var nxtBoxId = 'ixp' + nxteIx;
+                    nxtBox = document.getElementById(nxtBoxId);
+                    nxtBox = applyHgLigDefaultStyle(nxtBox);
+                    hgligBoxDyBoxes.push(nxtBox);
+                    focusedElement = nxtBox;
+                }
+
+
+            } else if (curKeyType === 'ArrowLeft') {
+
+            }
+
+        }
+    }
+
+
+    // function dyboxIpDefaultStyle() {
+    //     dyboxIp.id = "ixp" + ri;
+    //     dyboxIp.value = ri;
+    //     dyboxIp.style.width = (defaultBoxWidth - 0) + "px";
+    //     dyboxIp.style.height = (defaultBoxHeight - 0) + "px";
+    //     //dyboxIp.innerHTML = i * j; //tab
+    //     dyboxIp.innerHTML = ri;
+    //     dyboxIp.style.top = curTopPos + "px";
+    //     dyboxIp.style.left = curLeftPos + "px";
+    //     return dyboxIp
+    // }
+
+
+    //console.log("tstW:", "systematic".startsWith("system"));
+
+
+    // util
+    function startsWith(content, sequence) {
+
+        var mainArr = Array.from(content);
+        var seqArr = Array.from(content);
+        var matchCount = 0;
+
+        for (var j = 0; j < seqArr.length; j++) {
+
+            if (j === mainArr.length) {
+                break;
+            }
+
+            if (mainArr[j] === seqArr[j]) {
+                ++matchCount;
+            }
+
+            if (matchCount >= seqArr.length) {
+                return 1;
+            }
+        }
+
+        return 0;
+
+
+    }
+
+
+
+
+
+</script>
+
+</html>
